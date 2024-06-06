@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="./styles/index.css">
+</head>
+<body>
+    <nav>
+        <div class="brand">EXodes</div>
+        <div class="nav-links">
+            <a href="#">Client</a>
+            <a href="#">ExodesMC</a>
+        </div>
+        <button class="profile-button">
+            <img id="small-avatar" class="icon-1" src="" alt="User Avatar">
+            <span id="nav-username"></span>
+        </button>
+    </nav><div class="card-container">
+        
+    <div class="card">
+        <div class="icon-container">
+            <img src="" class="user-icon" id="user-icon" alt="Icon" width="20" height="20">
+        </div>
+        <h3>Account Details</h3>
+        <p>Account Type: <span id="account-type">Premium</span></p>
+        <p>Balance: <span id="balance">$1000</span></p>
+        <p>Register In: <span id="login-date">2024-06-01</span></p>
+    </div>
+    <div class="card">
+        <div class="icon-container">
+            <img src="" class="user-icon" id="user-icon2" alt="Icon" width="20" height="20">
+        </div>
+        <h3>Order Details</h3>
+        <p>Total Orders: <span id="total-orders"></span></p>
+        <p>Pending Orders: <span id="pending"></span></p>
+        <p>Successful Orders: <span id="successful"></span></p>
+        <p>Canceled Orders: <span id="canceled"></span></p>
+    </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/user')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user data');
+                    }
+                    return response.json();
+                })
+                .then(user => {
+                    document.getElementById('nav-username').textContent = user.username;
+                    document.getElementById('small-avatar').src = user.avatarUrl;
+                    document.getElementById('user-icon').src = user.avatarUrl;
+                    document.getElementById('user-icon2').src = user.avatarUrl;
+                    document.getElementById('account-type').textContent = user.accountType;
+                    document.getElementById('balance').textContent = `${user.balance}$`;
+                    const loginDate = new Date(user.loginDate).toLocaleString();
+                    document.getElementById('login-date').textContent = loginDate;
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                    // Handle the error, e.g., show a message to the user
+                });
+    
+            fetch('/api/orders')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch order data');
+                    }
+                    return response.json();
+                })
+                .then(order => {
+                    document.getElementById('total-orders').innerText = order.totalOrders;
+                    document.getElementById('pending').innerText = order.pending;
+                    document.getElementById('successful').innerText = order.successful;
+                    document.getElementById('canceled').innerText = order.canceled;
+                })
+                .catch(error => {
+                    console.error('Error fetching order data:', error);
+                    // Handle the error, e.g., show a message to the user
+                });
+        });
+    </script>
+    
+</body>
+</html>
